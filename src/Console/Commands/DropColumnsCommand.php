@@ -2,8 +2,9 @@
 
 namespace Amranidev\Laracombee\Console\Commands;
 
-use Laracombee;
+
 use Amranidev\Laracombee\Console\LaracombeeCommand;
+
 
 class DropColumnsCommand extends LaracombeeCommand
 {
@@ -24,12 +25,20 @@ class DropColumnsCommand extends LaracombeeCommand
     protected $description = 'Drop columns form recombee db';
 
     /**
+     * laracombee instance.
+     *
+     * @var \Amranidev\Laracombee\Laracombee
+     */
+    private $laracombee;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->laracombee = new \Amranidev\Laracombee\Laracombee();
         parent::__construct();
     }
 
@@ -45,7 +54,7 @@ class DropColumnsCommand extends LaracombeeCommand
             exit;
         }
 
-        Laracombee::batch($this->loadColumns($this->argument('columns'))->all())
+        $this->laracombee->batch($this->loadColumns($this->argument('columns'))->all())
             ->then(function ($response) {
                 $this->info('Done!');
             })
@@ -65,7 +74,7 @@ class DropColumnsCommand extends LaracombeeCommand
     public function loadColumns(array $columns)
     {
         return collect($columns)->map(function (string $column) {
-            return $this->{'delete'.ucfirst($this->option('from')).'Property'}($column);
+            return $this->{'delete' . ucfirst($this->option('from')) . 'Property'}($column);
         });
     }
 }

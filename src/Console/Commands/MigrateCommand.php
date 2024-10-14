@@ -2,8 +2,9 @@
 
 namespace Amranidev\Laracombee\Console\Commands;
 
-use Laracombee;
+
 use Amranidev\Laracombee\Console\LaracombeeCommand;
+
 
 class MigrateCommand extends LaracombeeCommand
 {
@@ -23,12 +24,20 @@ class MigrateCommand extends LaracombeeCommand
     protected $description = 'Migrate to recombee';
 
     /**
+     * laracombee instance.
+     *
+     * @var \Amranidev\Laracombee\Laracombee
+     */
+    private $laracombee;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->laracombee = new \Amranidev\Laracombee\Laracombee();
         parent::__construct();
     }
 
@@ -41,7 +50,7 @@ class MigrateCommand extends LaracombeeCommand
     {
         $scope = $this->prepareScope()->all();
 
-        Laracombee::batch($scope)
+        $this->laracombee->batch($scope)
             ->then(function ($response) {
                 $this->info('Done!');
             })
@@ -58,12 +67,12 @@ class MigrateCommand extends LaracombeeCommand
      */
     public function prepareScope()
     {
-        $class = config('laracombee.'.$this->argument('type'));
+        $class = config('laracombee.' . $this->argument('type'));
 
         $properties = $class::$laracombee;
 
         return collect($properties)->map(function (string $type, string $property) {
-            return $this->{'add'.ucfirst($this->argument('type')).'Property'}($property, $type);
+            return $this->{'add' . ucfirst($this->argument('type')) . 'Property'}($property, $type);
         });
     }
 }

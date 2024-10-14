@@ -2,7 +2,6 @@
 
 namespace Amranidev\Laracombee\Console;
 
-use Laracombee;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Model;
@@ -10,12 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 class LaracombeeCommand extends Command
 {
     /**
+     * laracombee instance.
+     *
+     * @var \Amranidev\Laracombee\Laracombee
+     */
+    private $laracombee;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->laracombee = new \Amranidev\Laracombee\Laracombee();
         parent::__construct();
     }
 
@@ -29,7 +36,7 @@ class LaracombeeCommand extends Command
      */
     public function addUserProperty(string $property, string $type)
     {
-        return Laracombee::addUserProperty($property, $type);
+        return $this->laracombee->addUserProperty($property, $type);
     }
 
     /**
@@ -42,7 +49,7 @@ class LaracombeeCommand extends Command
      */
     public function addItemProperty(string $property, string $type)
     {
-        return Laracombee::addItemProperty($property, $type);
+        return $this->laracombee->addItemProperty($property, $type);
     }
 
     /**
@@ -54,7 +61,7 @@ class LaracombeeCommand extends Command
      */
     public function deleteUserProperty(string $property)
     {
-        return Laracombee::deleteUserProperty($property);
+        return $this->laracombee->deleteUserProperty($property);
     }
 
     /**
@@ -66,7 +73,7 @@ class LaracombeeCommand extends Command
      */
     public function deleteItemProperty(string $property)
     {
-        return Laracombee::deleteItemProperty($property);
+        return $this->laracombee->deleteItemProperty($property);
     }
 
     /**
@@ -78,7 +85,7 @@ class LaracombeeCommand extends Command
      */
     public function addUser(User $user)
     {
-        return Laracombee::addUser($user);
+        return $this->laracombee->addUser($user);
     }
 
     /**
@@ -90,7 +97,7 @@ class LaracombeeCommand extends Command
      */
     public function addItem(Model $item)
     {
-        return Laracombee::addItem($item);
+        return $this->laracombee->addItem($item);
     }
 
     /**
@@ -102,7 +109,7 @@ class LaracombeeCommand extends Command
      */
     public function addUsers(array $batch)
     {
-        return Laracombee::addUsers($batch);
+        return $this->laracombee->addUsers($batch);
     }
 
     /**
@@ -114,6 +121,6 @@ class LaracombeeCommand extends Command
      */
     public function addItems(array $batch)
     {
-        return Laracombee::addItems($batch);
+        return $this->laracombee->addItems($batch);
     }
 }

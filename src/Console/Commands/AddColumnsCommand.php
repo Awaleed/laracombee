@@ -2,8 +2,8 @@
 
 namespace Amranidev\Laracombee\Console\Commands;
 
-use Laracombee;
 use Amranidev\Laracombee\Console\LaracombeeCommand;
+
 
 class AddColumnsCommand extends LaracombeeCommand
 {
@@ -24,12 +24,20 @@ class AddColumnsCommand extends LaracombeeCommand
     protected $description = 'Add new columns to recombee db';
 
     /**
+     * laracombee instance.
+     *
+     * @var \Amranidev\Laracombee\Laracombee
+     */
+    private $laracombee;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->laracombee = new \Amranidev\Laracombee\Laracombee();
         parent::__construct();
     }
 
@@ -45,7 +53,7 @@ class AddColumnsCommand extends LaracombeeCommand
             exit;
         }
 
-        Laracombee::batch($this->loadColumns($this->argument('columns'))->all())
+        $this->laracombee->batch($this->loadColumns($this->argument('columns'))->all())
             ->then(function ($response) {
                 $this->info('Done!');
             })
@@ -67,7 +75,7 @@ class AddColumnsCommand extends LaracombeeCommand
         return collect($columns)->map(function (string $column) {
             list($property, $type) = explode(':', $column);
 
-            return $this->{'add'.ucfirst($this->option('to')).'Property'}($property, $type);
+            return $this->{'add' . ucfirst($this->option('to')) . 'Property'}($property, $type);
         });
     }
 }

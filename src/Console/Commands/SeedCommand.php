@@ -2,7 +2,6 @@
 
 namespace Amranidev\Laracombee\Console\Commands;
 
-use Laracombee;
 use Illuminate\Console\Command;
 use Amranidev\Laracombee\Console\LaracombeeCommand;
 
@@ -39,12 +38,20 @@ class SeedCommand extends LaracombeeCommand
     protected static $chunk = 100;
 
     /**
+     * laracombee instance.
+     *
+     * @var \Amranidev\Laracombee\Laracombee
+     */
+    private $laracombee;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->laracombee = new \Amranidev\Laracombee\Laracombee();
         parent::__construct();
     }
 
@@ -57,7 +64,7 @@ class SeedCommand extends LaracombeeCommand
     {
         $chunk = (int) $this->option('chunk') ?: self::$chunk;
 
-        $class = config('laracombee.'.$this->argument('type'));
+        $class = config('laracombee.' . $this->argument('type'));
 
         $records = $class::all();
 
@@ -66,9 +73,8 @@ class SeedCommand extends LaracombeeCommand
         $bar = $this->output->createProgressBar($total / $chunk);
 
         $records->chunk($chunk)->each(function ($users) use ($bar) {
-            $batch = $this->{'add'.ucfirst($this->argument('type')).'s'}($users->all());
-            Laracombee::batch($batch)->then(function ($response) {
-            })->otherwise(function ($error) {
+            $batch = $this->{'add' . ucfirst($this->argument('type')) . 's'}($users->all());
+            $this->laracombee->batch($batch)->then(function ($response) {})->otherwise(function ($error) {
                 $this->info('');
                 $this->error($error);
                 exit;
